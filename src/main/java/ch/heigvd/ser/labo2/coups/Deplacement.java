@@ -49,9 +49,18 @@ public class Deplacement extends Coup {
     public String notationPGNimplem() {
 
         // TODO A implémenter (vous pouvez retirer le return null)
-        if(elimination == null)
-            return pieceDeplacee.notationPGN() + arrivee.notationPGN();
+        String result;
+
+        if(elimination != null)
+        {
+            if(pieceDeplacee.notationPGN() == "")
+                result = depart.getColonne() + "x" + arrivee.notationPGN();
+            else
+                result = pieceDeplacee.notationPGN() + "x" + arrivee.notationPGN();
+        }
         else
-            return pieceDeplacee.notationPGN() + 'x' + arrivee.notationPGN();
+            result = pieceDeplacee.notationPGN() + (depart != null ? depart.notationPGN() : "") + arrivee.notationPGN();
+
+        return result;
     }
 }
