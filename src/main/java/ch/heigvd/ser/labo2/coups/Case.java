@@ -32,6 +32,7 @@ public class Case implements ConvertissableEnPGN {
 
     public String notationPGN() {
 
+
         String pgn = Character.isLowerCase(getColonne()) + Integer.toString(getLigne());
         return pgn;
 
