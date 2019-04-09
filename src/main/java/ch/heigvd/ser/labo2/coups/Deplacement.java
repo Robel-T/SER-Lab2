@@ -51,12 +51,15 @@ public class Deplacement extends Coup {
         // TODO A implémenter (vous pouvez retirer le return null)
         String result;
 
-        if(elimination != null)
-        {
-            if(pieceDeplacee.notationPGN() == "")
+        if(elimination != null) {
+            if (pieceDeplacee.notationPGN() == "") {
                 result = depart.getColonne() + "x" + arrivee.notationPGN();
-            else
+            } else {
                 result = pieceDeplacee.notationPGN() + "x" + arrivee.notationPGN();
+            }
+        }
+        else if (promotion != null) {
+            result = arrivee.notationPGN() + "=" + promotion.notationPGN();
         }
         else
             result = pieceDeplacee.notationPGN() + (depart != null ? depart.notationPGN() : "") + arrivee.notationPGN();
