@@ -1,7 +1,5 @@
 package ch.heigvd.ser.labo2.coups;
 
-import com.sun.tools.javac.comp.Lower;
-
 public class Case implements ConvertissableEnPGN {
 
     private final char colonne;
@@ -31,11 +29,7 @@ public class Case implements ConvertissableEnPGN {
      */
 
     public String notationPGN() {
-
-
-        String pgn = Character.isLowerCase(getColonne()) + Integer.toString(getLigne());
-        return pgn;
-
+        return Character.toLowerCase(getColonne()) + Integer.toString(getLigne());
     }
 
 }
