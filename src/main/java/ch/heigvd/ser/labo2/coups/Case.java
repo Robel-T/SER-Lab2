@@ -30,8 +30,7 @@ public class Case implements ConvertissableEnPGN {
     @Override
     public String notationPGN() {
 
-        // TODO : A compléter... (vous pouvez retirer le return null)
-        return null;
+        return Character.toLowerCase(getColonne()) + String.valueOf(getLigne());
 
     }
 
