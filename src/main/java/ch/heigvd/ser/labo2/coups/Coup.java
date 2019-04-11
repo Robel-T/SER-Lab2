@@ -23,7 +23,6 @@ public abstract class Coup implements ConvertissableEnPGN {
      */
     public String notationPGN() {
 
-        // TODO : A implémenter...
         String pgn;
         pgn = notationPGNimplem();
         if(coupSpecial != null) {

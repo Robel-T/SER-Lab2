@@ -7,6 +7,7 @@ class Main {
     public static void main(String ... args) {
 
         // TODO : A implémenter...
+        JDOM_Read jd = new JDOM_Read();
 
     }
 
