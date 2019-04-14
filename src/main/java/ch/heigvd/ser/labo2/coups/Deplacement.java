@@ -48,7 +48,6 @@ public class Deplacement extends Coup {
     @Override
     public String notationPGNimplem() {
 
-        // TODO A implémenter (vous pouvez retirer le return null)
         String result;
 
         if(elimination != null) {

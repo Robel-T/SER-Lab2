@@ -1,9 +1,6 @@
 package ch.heigvd.ser.labo2;
 
-import ch.heigvd.ser.labo2.coups.Case;
-import ch.heigvd.ser.labo2.coups.Deplacement;
-import ch.heigvd.ser.labo2.coups.TypePiece;
-import org.jdom2.Attribute;
+import ch.heigvd.ser.labo2.coups.*;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -17,117 +14,183 @@ import java.util.List;
 
 public class JDOM_Read {
 
-    public static void main(String ... args) {
-        SAXBuilder builder = new SAXBuilder();
-        Document doc;
-        PrintWriter pw;
+    SAXBuilder builder = new SAXBuilder();
+    Document doc;
+    PrintWriter pw;
 
-        {
-            try {
-                doc = builder.build(new File("tournois_fse.xml"));
-                Element rootElement = doc.getRootElement();
+    public void read() {
+        try {
+            doc = builder.build(new File("tournois_fse.xml"));
+            Element rootElement = doc.getRootElement();
 
-                Element tournois = rootElement.getChild("tournois");
-                Element joueurs =  rootElement.getChild("joueurs");
-                Element arbitres = rootElement.getChild("arbitres");
+            Element tournois = rootElement.getChild("tournois");
+            //Element joueurs = rootElement.getChild("joueurs");
+            Element arbitres = rootElement.getChild("arbitres");
 
-                List ListeTournoi = tournois.getChildren("tournoi");
-                List ListeJoueur = joueurs.getChildren("joueur");
-                List ListeArbitre = arbitres.getChildren("arbitre");
-
-
-                for (int iTournoi = 0; iTournoi < ListeTournoi.size(); ++iTournoi) {
-
-                    Element parties =((Element) ListeTournoi.get(iTournoi)).getChild("parties");
-
-                    List ListePartie = parties.getChildren("partie");
-                    for (int iPartie = 0; iPartie < ListePartie.size(); ++iPartie) {
-                        pw = new PrintWriter(new FileWriter("src/Partie" + (iPartie+1) + "-tournoi" + (iTournoi+1) + ".pgn"));
-
-                        Element coups = ((Element) ListePartie.get(iPartie)).getChild("coups");
-
-                        List ListeCoup = coups.getChildren("coup");
-
-                        for (int iCoups = 0; iCoups < ListeCoup.size(); ++iCoups) {
-
-                            Element deplacement = ((Element)ListeCoup.get(iCoups)).getChild("deplacement");
-/*                            String piece = deplacement.getAttributeValue("piece");
-                            String case_arrivee = deplacement.getAttributeValue("case_arrivee");
-
-                            char colonne = case_arrivee.charAt(0);
-                            char ligne = case_arrivee.charAt(1);*/
-                            pw.println(iCoups+1);
-                            // Les fichiers parties sont créer avec les numeros de coups, il faut maintenent faire
-                            // afficher le reste
-
-                            /*
-                            if (piece.equals(TypePiece.Pion.toString())){
-                                Case depart = new Case(colonne, ligne);
-
-                            }
-                            pw.println((iCoups+1) + depart.notationPGN());
-*/
-                            // System.out.println(depart.notationPGN());
-                            //Case arrivee = new Case(c, i);
-
-                            //Deplacement deplacement = new Deplacement(pieceDeplacee, elimination, null, null, depart, arrivee);
+            List ListeTournoi = tournois.getChildren("tournoi");
+            //List ListeJoueur = joueurs.getChildren("joueur");
+            //List ListeArbitre = arbitres.getChildren("arbitre");
 
 
+            for (int iTournoi = 0; iTournoi < ListeTournoi.size(); ++iTournoi) {
+
+                System.out.println("\nTournoi" + (iTournoi + 1));
+                Element parties = ((Element) ListeTournoi.get(iTournoi)).getChild("parties");
+
+                List ListePartie = parties.getChildren("partie");
+                for (int iPartie = 0; iPartie < ListePartie.size(); ++iPartie) {
+                    System.out.println("\nPartie" + (iPartie + 1) + "\n");
+                    System.out.printf("_______________________________\n\n");
+
+                    pw = new PrintWriter(new FileWriter("src/Partie" + (iPartie + 1) + "-tournoi" + (iTournoi + 1) + ".pgn"));
+
+                    Element coups = ((Element) ListePartie.get(iPartie)).getChild("coups");
+
+                    List ListeCoup = coups.getChildren("coup");
 
 
+                    String tour = "";
+                    int i = 1;
+                    int tourcoups = 1;
+                    for (int iCoups = 0; iCoups < ListeCoup.size(); ++iCoups) {
+                        String typeRoque      = "";
+                        String piece          = "";
+                        String case_arrivee   = "";
+                        String case_depart    = "";
+                        String e              = "";
+                        String promo          = "";
+                        TypeRoque tr          = null;
+                        CoupSpecial cp;
+                        TypePiece p           = null;
+                        TypePiece elimination = null;
+                        TypePiece promotion   = null;
+                        Case depart           = null;
+                        Case arrivee          = null;
 
+                        Element deplacement = ((Element) ListeCoup.get(iCoups)).getChild("deplacement");
+                        Element roque = ((Element) ListeCoup.get(iCoups)).getChild("roque");
 
-
+                        String coupSpecial = ((Element) ListeCoup.get(iCoups)).getAttributeValue("coup_special");
+                        if (coupSpecial == null) {
+                            coupSpecial = "";
                         }
-                        pw.close();
+                        cp = toSpecial(coupSpecial);
+
+                        if (roque != null) {
+                            typeRoque = roque.getAttributeValue("type");
+                            tr = sizeRoque(typeRoque);
+                        }
+
+                        if (deplacement != null) {
+                            piece = deplacement.getAttributeValue("piece");
+                            case_arrivee = deplacement.getAttributeValue("case_arrivee");
+
+                            e = deplacement.getAttributeValue("elimination");
+                            if (e == null) {
+                                e = "";
+                            } else {
+                                if (piece.equals("Pion")) {
+                                    case_depart = deplacement.getAttributeValue("case_depart");
+
+                                    char cD = case_depart.charAt(0);
+                                    char lD = case_depart.charAt(1);
+                                    depart = new Case(cD, lD - 48);
+                                }
+                            }
+                            elimination = pieceToNotation(e);
 
 
+                            char cA = case_arrivee.charAt(0);
+                            char lA = case_arrivee.charAt(1);
+                            arrivee = new Case(cA, lA - 48);
+
+                            promo = deplacement.getAttributeValue("promotion");
+
+                            if (promo == null) {
+                                promo = "";
+                            }
+                            promotion = pieceToNotation(promo);
+                            p = pieceToNotation(piece);
+                        }
+
+                        if (tr != null) {
+                            Roque rq = new Roque(cp, tr);
+                            tour += rq.notationPGN();
+                        } else {
+                            Deplacement dp = new Deplacement(p, elimination, promotion, cp, depart, arrivee);
+                            tour += dp.notationPGN();
+                        }
+
+                        if (i % 2 == 0 || i == (ListeCoup.size())) {
+                            tour = tourcoups + " " + tour;
+                            System.out.println(tour);
+                            pw.println(tour);
+                            tour = "";
+                            tourcoups++;
+                        } else {
+                            tour += " ";
+                        }
+
+                        i++;
                     }
+                    pw.println(tour);
+                    pw.close();
 
 
-
-               /* System.out.println("nom    : "  + menu.getChildText("nom"));
-                System.out.println("pos    : "  + menu.getAttributeValue("position"));
-
-                List listOption = menu.getChildren("option");
-                for (int iOption = 0; iOption < listOption.size(); ++iOption) {
-                    Element option = (Element) listOption.get(iOption);
-                    System.out.println("option : "  + option.getText());
-                }*/
                 }
 
-
-            } catch (JDOMException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
             }
-        }
 
+
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 
     }
 
-    private String pieceToNotation(TypePiece pieceDeplacee) {
+    private TypePiece pieceToNotation(String s) {
 
-        switch (pieceDeplacee) {
+        if (s.equals("Fou"))
+            return TypePiece.Fou;
+        else if (s.equals("Cavalier"))
+            return TypePiece.Cavalier;
+        else if (s.equals("Dame"))
+            return TypePiece.Dame;
+        else if (s.equals("Roi"))
+            return TypePiece.Roi;
+        else if (s.equals("Pion"))
+            return TypePiece.Pion;
+        else if (s.equals("Tour"))
+            return TypePiece.Tour;
+        else
+            return null;
 
-            case Fou:
-                return "B";
-            case Cavalier:
-                return "N";
-            case Dame:
-                return "Q";
-            case Roi:
-                return "K";
-            case Pion:
-                return "";
-            case Tour:
-                return "R";
+    }
 
-        }
+    private TypeRoque sizeRoque(String s) {
 
-        return null;
+        if (s.equals("petit_roque"))
+            return TypeRoque.PETIT;
+        else if (s.equals("grand_roque"))
+            return TypeRoque.GRAND;
+        else
+            return null;
+
+    }
+
+    private CoupSpecial toSpecial(String s) {
+
+        if (s.equals("mat"))
+            return CoupSpecial.MAT;
+        else if (s.equals("echec"))
+            return CoupSpecial.ECHEC;
+        else
+            return CoupSpecial.NULLE;
 
     }
 }

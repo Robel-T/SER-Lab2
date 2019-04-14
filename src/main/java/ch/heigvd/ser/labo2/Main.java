@@ -8,6 +8,7 @@ class Main {
 
         // TODO : A implémenter...
         JDOM_Read jd = new JDOM_Read();
+        jd.read();
 
     }
 
