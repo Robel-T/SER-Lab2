@@ -84,18 +84,17 @@ public class JDOM_Read {
                         if (deplacement != null) {
                             piece = deplacement.getAttributeValue("piece");
                             case_arrivee = deplacement.getAttributeValue("case_arrivee");
-
+                            case_depart = deplacement.getAttributeValue("case_depart");
                             e = deplacement.getAttributeValue("elimination");
+
+                            if(case_depart != null){
+                                char cD = case_depart.charAt(0);
+                                char lD = case_depart.charAt(1);
+                                depart = new Case(cD, lD - 48);
+                            }
+
                             if (e == null) {
                                 e = "";
-                            } else {
-                                if (piece.equals("Pion")) {
-                                    case_depart = deplacement.getAttributeValue("case_depart");
-
-                                    char cD = case_depart.charAt(0);
-                                    char lD = case_depart.charAt(1);
-                                    depart = new Case(cD, lD - 48);
-                                }
                             }
                             elimination = pieceToNotation(e);
 

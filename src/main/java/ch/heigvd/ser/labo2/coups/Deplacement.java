@@ -53,8 +53,8 @@ public class Deplacement extends Coup {
         if(elimination != null) {
             if (pieceDeplacee.notationPGN() == "") {
                 result = depart.getColonne() + "x" + arrivee.notationPGN();
-            } else {
-                result = pieceDeplacee.notationPGN() + "x" + arrivee.notationPGN();
+            } else{
+                result = pieceDeplacee.notationPGN() + (depart != null ? depart.notationPGN() : "")+ "x" + arrivee.notationPGN();
             }
         }
         else if (promotion != null) {
